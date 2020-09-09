@@ -1,0 +1,35 @@
+procedure stmt;
+var test, out: integer;
+begin
+  if lookahead = id then 
+  begin
+    emit('lvalue', tokenval);
+    match(id);
+    match(':=');
+    expr
+  end
+  else if lookahead = 'if' then 
+  begin
+    match('if');
+    expr;
+    out := newlabel;
+    emit('gofalse', out);
+    match('then');
+    stmt;
+    emit('label', out);
+  end
+  else if lookahead = 'while' then
+  begin
+    match('while');
+    test := newlabel;
+    emit('label', test);
+    expr;
+    out := newlabel;
+    emit('gofalse', out)
+    match('then')
+    stmt;
+    emit('goto', test)
+    emit('label', out)
+  end 
+  else error
+end
